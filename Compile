@@ -1,0 +1,20 @@
+﻿#! /bin/bash
+WLPP="$1.wlpp"
+ASM="$1.asm"
+MERL="$1.merl"
+PROG="$1prog.merl"
+
+source /u/cs241/setup;
+cat $WLPP | java cs241.WLPPScan | java cs241.WLPPParse | ./answer > $ASM;
+
+SIZE=$(wc -c < "$ASM")
+echo "Size of File: $SIZE";
+
+java cs241.linkasm < $ASM > $MERL;
+linker $MERL print.merl alloc.merl > $PROG
+if [[ $2 -eq 1 ]]
+then
+    java mips.twoints $PROG
+else
+    java mips.array $PROG
+fi
